@@ -38,22 +38,21 @@ class TestModel(test_combinations.TestCase):
         for v in model.variables:
             self.assertIn(v, checkpointed_objects)
 
-    # TODO: https://github.com/NVlabs/GCVit/issues/9
-    # def test_var_shape(self):
-    #     model = GCViTTiny(weights=None, include_top=False, input_shape=(None, None, 3))
-    #     model.compile(optimizer='rmsprop', loss='mse', run_eagerly=test_utils.should_run_eagerly())
-    #
-    #     images = np.random.random((10, 512, 384, 3)).astype('float32')
-    #     labels = (np.random.random((10, 16, 12, 768)) + 0.5).astype('int32')
-    #     model.fit(images, labels, epochs=1, batch_size=2)
-    #
-    #     # test config
-    #     model.get_config()
-    #
-    #     # check whether the model variables are present in the trackable list of objects
-    #     checkpointed_objects = object_identity.ObjectIdentitySet(trackable_util.list_objects(model))
-    #     for v in model.variables:
-    #         self.assertIn(v, checkpointed_objects)
+    def test_var_shape(self):
+        model = GCViTTiny(weights=None, include_top=False, input_shape=(None, None, 3))
+        model.compile(optimizer='rmsprop', loss='mse', run_eagerly=test_utils.should_run_eagerly())
+
+        images = np.random.random((10, 512, 384, 3)).astype('float32')
+        labels = (np.random.random((10, 16, 12, 512)) + 0.5).astype('int32')
+        model.fit(images, labels, epochs=1, batch_size=2)
+
+        # test config
+        model.get_config()
+
+        # check whether the model variables are present in the trackable list of objects
+        checkpointed_objects = object_identity.ObjectIdentitySet(trackable_util.list_objects(model))
+        for v in model.variables:
+            self.assertIn(v, checkpointed_objects)
 
 
 if __name__ == '__main__':

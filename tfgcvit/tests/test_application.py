@@ -74,18 +74,18 @@ class ApplicationTest(tf.test.TestCase, parameterized.TestCase):
         # Test correct label is in top 3 (weak correctness test).
         self.assertIn('African_elephant', names)
 
-    # @parameterized.parameters(*MODEL_LIST)
-    # def test_application_backbone(self, app, size, _):
-    #     inputs = layers.Input(shape=(None, None, 3), dtype='uint8')
-    #     outputs = layers.Lambda(tfgcvit.preprocess_input)(inputs)
-    #     outputs = app(include_top=False)(outputs)
-    #     outputs = layers.Conv2D(4, 3, padding='same', activation='softmax')(outputs)
-    #     model = models.Model(inputs=inputs, outputs=outputs)
-    #
-    #     data = np.random.uniform(0., 255., size=(2, size * 2, size * 2, 3)).astype('uint8')
-    #     result = model.predict(data)
-    #
-    #     self.assertTupleEqual(result.shape, (2, size * 2 // 32, size * 2 // 32, 4))
+    @parameterized.parameters(*MODEL_LIST)
+    def test_application_backbone(self, app, size, _):
+        inputs = layers.Input(shape=(None, None, 3), dtype='uint8')
+        outputs = layers.Lambda(tfgcvit.preprocess_input)(inputs)
+        outputs = app(include_top=False)(outputs)
+        outputs = layers.Conv2D(4, 3, padding='same', activation='softmax')(outputs)
+        model = models.Model(inputs=inputs, outputs=outputs)
+
+        data = np.random.uniform(0., 255., size=(2, size * 2, size * 2, 3)).astype('uint8')
+        result = model.predict(data)
+
+        self.assertTupleEqual(result.shape, (2, size * 2 // 32, size * 2 // 32, 4))
 
 
 if __name__ == '__main__':

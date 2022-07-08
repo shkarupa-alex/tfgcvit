@@ -1,4 +1,5 @@
 # tfgcvit
+Work in progress due to logical issues in original codebase.
 
 Keras (TensorFlow v2) reimplementation of **Global Context Vision Transformer** models.
 
@@ -91,11 +92,11 @@ print(history)
 
 |  name   | original acc@1 | ported acc@1 | original acc@5 | ported acc@5 |
 |:-------:|:--------------:|:------------:|:--------------:|:------------:|
-| GCViT-T |     72.35      |      ?       |     90.62      |      ?       |
-| GCViT-S |     72.91      |      ?       |     90.79      |      ?       |
+| GCViT-T |     70.20      |      ?       |     89.41      |      ?       |
+| GCViT-S |     68.65      |      ?       |     87.66      |      ?       |
 
 Meanwhile, all layers outputs have been compared with original. Most of them have maximum absolute difference
-around `9.9e-5`. Maximum absolute difference among all layers is `3.5e-4`.
+less then `1e-5`. Maximum absolute difference among all layers is `7e-3`.
 
 ## Citation
 
