@@ -1,5 +1,4 @@
 # tfgcvit
-Work in progress due to logical issues in original codebase.
 
 Keras (TensorFlow v2) reimplementation of **Global Context Vision Transformer** models.
 
@@ -7,12 +6,18 @@ Keras (TensorFlow v2) reimplementation of **Global Context Vision Transformer** 
 + Supports variable-shape inference for downstream tasks.
 + Contains pretrained weights converted from official ones.
 
+## Installation
+
+```bash
+pip install tfgcvit
+```
+
 ## Examples
 
 Default usage (without preprocessing):
 
 ```python
-from tfgcvit import GCViTTiny  # + 2 other variants and input preprocessing
+from tfgcvit import GCViTTiny  # + 4 other variants and input preprocessing
 
 model = GCViTTiny()  # by default will download imagenet-pretrained weights
 model.compile(...)
@@ -44,16 +49,15 @@ Code simplification:
 
 Performance improvements:
 
-- Layer normalization epsilon fixed at `1.001e-5`, inputs are casted to `float32` to use fused op implementation.
+- Layer normalization epsilon fixed at `1.001e-5` and inputs are casted to `float32` to use fused op implementation.
 - Some layers have been refactored to use faster TF operations.
-- A lot of reshapes have been removed. Most of the time internal representation is 4D-tensor.
+- A lot of reshapes/transposes have been removed. Most of the time internal representation is 4D-tensor.
 - Relative index estimations moved to GCViTLayer layer level.
 
 ## Variable shapes
 
 When using GCViT models with input shapes different from pretraining one, try to make height and width to be multiple
-of `32 * window_size`. Otherwise, a lot of tensors will be padded, resulting in speed and (possibly) quality
-degradation.
+of `32 * window_size`. Otherwise, a lot of tensors will be padded, resulting in speed degradation.
 
 ## Evaluation
 
@@ -66,14 +70,25 @@ import tensorflow_datasets as tfds
 from tfgcvit import GCViTTiny, preprocess_input
 
 
-def _prepare(example):
-    img_size = 256
+def _prepare(example, input_size=224, crop_pct=0.875):
+    scale_size = tf.math.floor(input_size / crop_pct)
 
-    res_size = int((256 / 224) * img_size)
-    img_scale = 224 / 256
+    image = example['image']
 
-    image = tf.image.resize(example['image'], (res_size, res_size), method=tf.image.ResizeMethod.BICUBIC)
-    image = tf.image.central_crop(image, img_scale)
+    shape = tf.shape(image)[:2]
+    shape = tf.cast(shape, 'float32')
+    shape *= scale_size / tf.reduce_min(shape)
+    shape = tf.round(shape)
+    shape = tf.cast(shape, 'int32')
+
+    image = tf.image.resize(image, shape, method=tf.image.ResizeMethod.BICUBIC)
+    image = tf.round(image)
+    image = tf.clip_by_value(image, 0., 255.)
+    image = tf.cast(image, 'uint8')
+
+    pad_h, pad_w = tf.unstack((shape - input_size) // 2)
+    image = image[pad_h:pad_h + input_size, pad_w:pad_w + input_size]
+
     image = preprocess_input(image)
 
     return image, example['label']
@@ -81,7 +96,7 @@ def _prepare(example):
 
 imagenet2 = tfds.load('imagenet_v2', split='test', shuffle_files=True)
 imagenet2 = imagenet2.map(_prepare, num_parallel_calls=tf.data.AUTOTUNE)
-imagenet2 = imagenet2.batch(8)
+imagenet2 = imagenet2.batch(8).prefetch(tf.data.AUTOTUNE)
 
 model = GCViTTiny()
 model.compile('sgd', 'sparse_categorical_crossentropy', ['accuracy', 'sparse_top_k_categorical_accuracy'])
@@ -90,13 +105,15 @@ history = model.evaluate(imagenet2)
 print(history)
 ```
 
-|  name   | original acc@1 | ported acc@1 | original acc@5 | ported acc@5 |
-|:-------:|:--------------:|:------------:|:--------------:|:------------:|
-| GCViT-T |     70.20      |      ?       |     89.41      |      ?       |
-| GCViT-S |     68.65      |      ?       |     87.66      |      ?       |
+| name  | original acc@1 | ported acc@1 | original acc@5 | ported acc@5 |
+|:-----:|:--------------:|:------------:|:--------------:|:------------:|
+| Tiny  |     73.01      |    72.93     |     90.75      |    90.70     |
+| Small |     73.39      |    73.46     |     91.09      |    91.14     |
 
-Meanwhile, all layers outputs have been compared with original. Most of them have maximum absolute difference
-less then `1e-5`. Maximum absolute difference among all layers is `7e-3`.
+The most metric differences comes from input data preprocessing (decoding, interpolation).
+All layers outputs have been compared with original ones.
+Maximum absolute difference among all layers is `8e-4`.
+Most of them have maximum absolute difference less then `1e-5`.
 
 ## Citation
 

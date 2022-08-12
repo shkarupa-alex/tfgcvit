@@ -7,6 +7,8 @@ from keras.applications import imagenet_utils
 from keras.utils import data_utils, image_utils
 
 MODEL_LIST = [
+    (tfgcvit.GCViTNano, 224, 512),
+    (tfgcvit.GCViTMicro, 224, 512),
     (tfgcvit.GCViTTiny, 224, 512),
     (tfgcvit.GCViTSmall, 224, 768),
     (tfgcvit.GCViTBase, 224, 1024)
@@ -71,7 +73,7 @@ class ApplicationTest(tf.test.TestCase, parameterized.TestCase):
 
         names = [p[1] for p in imagenet_utils.decode_predictions(preds, top=1)[0]]
 
-        # Test correct label is in top 3 (weak correctness test).
+        # Test correct label is in top 1 (strong correctness test).
         self.assertIn('African_elephant', names)
 
     @parameterized.parameters(*MODEL_LIST)

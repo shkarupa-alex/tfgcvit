@@ -45,7 +45,8 @@ class Level(layers.Layer):
 
         # noinspection PyAttributeOutsideInit
         self.global_query = [
-            FeatExtract(keep_size, name=f'to_q_global/{i}') for i, keep_size in enumerate(self.keep_sizes)]
+            FeatExtract(keep_size, name=f'q_global_gen/to_q_global/{i}')
+            for i, keep_size in enumerate(self.keep_sizes)]
 
         # noinspection PyAttributeOutsideInit
         self.resize_query = layers.Resizing(self.window_size, self.window_size)

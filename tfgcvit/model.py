@@ -10,14 +10,18 @@ from tfgcvit.level import Level
 
 BASE_URL = 'https://github.com/shkarupa-alex/tfgcvit/releases/download/{}/gcvit_{}.h5'
 WEIGHT_URLS = {
+    'gcvit_nano': BASE_URL.format('1.0.0', 'nano'),
+    'gcvit_micro': BASE_URL.format('1.0.0', 'micro'),
     'gcvit_tiny': BASE_URL.format('1.0.0', 'tiny'),
     'gcvit_small': BASE_URL.format('1.0.0', 'small'),
     'gcvit_base': BASE_URL.format('1.0.0', 'base'),
 }
 WEIGHT_HASHES = {
-    'gcvit_tiny': '06588c1314ec16f5d46b6381431c1fc9355f82c4eda0f34e7e57ee32048b6d9a',
-    'gcvit_small': '49d799e6b860d97377e2d67f866d691f6ee8e02dd6e6d9c485eb3ee0a0076508',
-    'gcvit_base': '61792331fce60c47cf7d2bd8e77c8496245cced095a698ab84b275fc20aab32c'
+    'gcvit_nano': '851a888fe4dde3e7b0da02f02e66ee72eeacfcdf50637af046ccc7669eb82a4d',
+    'gcvit_micro': '935545aed954d3e26a4aae160842b3a358e9b06240f450aec69d453a350a106f',
+    'gcvit_tiny': '00e6677f6afb0a1317c1a0b2c626175e05782cd97490b1b5ae20af5ec3835f57',
+    'gcvit_small': '66b392b75f4ff1e7f6e134c9368d9c2f1c4136bf5aaa4f61a39d09b8c03f8d92',
+    'gcvit_base': 'a75ffeeb104c6f40d86129a41eef30ab9bb3229e8c0afbe09ebef4e9e75e3599'
 }
 
 
@@ -143,10 +147,9 @@ def GCViT(
 
     # Load weights.
     if 'imagenet' == weights and model_name in WEIGHT_URLS:
-        # weights_url = WEIGHT_URLS[model_name]
-        # weights_hash = WEIGHT_HASHES[model_name]
-        # weights_path = data_utils.get_file(origin=weights_url, file_hash=weights_hash, cache_subdir='tfgcvit')
-        weights_path = f'/Users/alex/Develop/tfgcvit/weights/{model_name}.h5'
+        weights_url = WEIGHT_URLS[model_name]
+        weights_hash = WEIGHT_HASHES[model_name]
+        weights_path = data_utils.get_file(origin=weights_url, file_hash=weights_hash, cache_subdir='tfgcvit')
         model.load_weights(weights_path)
     elif weights is not None:
         model.load_weights(weights)
@@ -164,6 +167,18 @@ def GCViT(
     model = models.Model(inputs=inputs, outputs=outputs, name=model_name)
 
     return model
+
+
+def GCViTNano(model_name='gcvit_nano', window_size=(7, 7, 14, 7), embed_dim=64, depths=(2, 2, 6, 2),
+              num_heads=(2, 4, 8, 16), path_drop=0.2, weights='imagenet', **kwargs):
+    return GCViT(model_name=model_name, window_size=window_size, embed_dim=embed_dim, depths=depths,
+                 num_heads=num_heads, path_drop=path_drop, weights=weights, **kwargs)
+
+
+def GCViTMicro(model_name='gcvit_micro', window_size=(7, 7, 14, 7), embed_dim=64, depths=(3, 4, 6, 5),
+               num_heads=(2, 4, 8, 16), path_drop=0.2, weights='imagenet', **kwargs):
+    return GCViT(model_name=model_name, window_size=window_size, embed_dim=embed_dim, depths=depths,
+                 num_heads=num_heads, path_drop=path_drop, weights=weights, **kwargs)
 
 
 def GCViTTiny(model_name='gcvit_tiny', window_size=(7, 7, 14, 7), embed_dim=64, depths=(3, 4, 19, 5),
