@@ -7,6 +7,8 @@ from keras.applications import imagenet_utils
 from keras.utils import data_utils, image_utils
 
 MODEL_LIST = [
+    (tfgcvit.GCViTNano, 224, 512),
+    (tfgcvit.GCViTMicro, 224, 512),
     (tfgcvit.GCViTTiny, 224, 512),
     (tfgcvit.GCViTSmall, 224, 768),
     (tfgcvit.GCViTBase, 224, 1024)
@@ -71,21 +73,21 @@ class ApplicationTest(tf.test.TestCase, parameterized.TestCase):
 
         names = [p[1] for p in imagenet_utils.decode_predictions(preds, top=1)[0]]
 
-        # Test correct label is in top 3 (weak correctness test).
+        # Test correct label is in top 1 (strong correctness test).
         self.assertIn('African_elephant', names)
 
-    # @parameterized.parameters(*MODEL_LIST)
-    # def test_application_backbone(self, app, size, _):
-    #     inputs = layers.Input(shape=(None, None, 3), dtype='uint8')
-    #     outputs = layers.Lambda(tfgcvit.preprocess_input)(inputs)
-    #     outputs = app(include_top=False)(outputs)
-    #     outputs = layers.Conv2D(4, 3, padding='same', activation='softmax')(outputs)
-    #     model = models.Model(inputs=inputs, outputs=outputs)
-    #
-    #     data = np.random.uniform(0., 255., size=(2, size * 2, size * 2, 3)).astype('uint8')
-    #     result = model.predict(data)
-    #
-    #     self.assertTupleEqual(result.shape, (2, size * 2 // 32, size * 2 // 32, 4))
+    @parameterized.parameters(*MODEL_LIST)
+    def test_application_backbone(self, app, size, _):
+        inputs = layers.Input(shape=(None, None, 3), dtype='uint8')
+        outputs = layers.Lambda(tfgcvit.preprocess_input)(inputs)
+        outputs = app(include_top=False)(outputs)
+        outputs = layers.Conv2D(4, 3, padding='same', activation='softmax')(outputs)
+        model = models.Model(inputs=inputs, outputs=outputs)
+
+        data = np.random.uniform(0., 255., size=(2, size * 2, size * 2, 3)).astype('uint8')
+        result = model.predict(data)
+
+        self.assertTupleEqual(result.shape, (2, size * 2 // 32, size * 2 // 32, 4))
 
 
 if __name__ == '__main__':

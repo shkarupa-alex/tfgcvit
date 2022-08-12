@@ -1,6 +1,7 @@
 from keras import layers
 from keras.utils.generic_utils import register_keras_serializable
 from keras.utils.tf_utils import shape_type_conversion
+from .pad import SymmetricPadding
 from .se import SE
 
 
@@ -27,7 +28,7 @@ class FeatExtract(layers.Layer):
 
         if not self.keep_size:
             # noinspection PyAttributeOutsideInit
-            self.pad = layers.ZeroPadding2D(1)
+            self.pad = SymmetricPadding(1)
 
             # noinspection PyAttributeOutsideInit
             self.pool = layers.MaxPool2D(3, strides=2)

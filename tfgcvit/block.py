@@ -82,7 +82,6 @@ class Block(layers.Layer):
 
         outputs = self.norm1(inputs)
 
-
         # Partition windows
         outputs = window_partition(outputs, height, width, self.window_size, self.compute_dtype)
 

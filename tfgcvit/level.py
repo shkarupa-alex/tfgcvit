@@ -45,7 +45,11 @@ class Level(layers.Layer):
 
         # noinspection PyAttributeOutsideInit
         self.global_query = [
-            FeatExtract(keep_size, name=f'to_q_global/{i}') for i, keep_size in enumerate(self.keep_sizes)]
+            FeatExtract(keep_size, name=f'q_global_gen/to_q_global/{i}')
+            for i, keep_size in enumerate(self.keep_sizes)]
+
+        # noinspection PyAttributeOutsideInit
+        self.resize_query = layers.Resizing(self.window_size, self.window_size)
 
         super().build(input_shape)
 
@@ -71,13 +75,14 @@ class Level(layers.Layer):
         global_query = outputs
         for layer in self.global_query:
             global_query = layer(global_query)
+        global_query = self.resize_query(global_query)
 
         input_length = padded_height * padded_width
-        query_length = tf.reduce_prod(tf.shape(global_query)[1:3])
+        query_length = self.window_size ** 2
 
         global_query = tf.reshape(global_query, [-1, 1, query_length, self.num_heads, self.channels // self.num_heads])
         global_query = tf.transpose(global_query, [0, 1, 3, 2, 4])
-        global_query = tf.repeat(global_query, [input_length // query_length], axis=1)
+        global_query = tf.tile(global_query, [1, input_length // query_length, 1, 1, 1])
         global_query = tf.reshape(global_query, [-1, self.num_heads, query_length, self.channels // self.num_heads])
 
         relative_index = self.relative_index()
