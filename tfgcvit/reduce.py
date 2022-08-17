@@ -21,9 +21,6 @@ class ReduceSize(layers.Layer):
             raise ValueError('Channel dimensions of the inputs should be defined. Found `None`.')
 
         # noinspection PyAttributeOutsideInit
-        self.norm1 = LayerNorm(name='norm1')
-
-        # noinspection PyAttributeOutsideInit
         self.norm2 = LayerNorm(name='norm2')
 
         # noinspection PyAttributeOutsideInit
@@ -44,13 +41,11 @@ class ReduceSize(layers.Layer):
         super().build(input_shape)
 
     def call(self, inputs, *args, **kwargs):
-        outputs = self.norm1(inputs)
-
-        residual = outputs
+        residual = inputs
         for layer in self.conv:
             residual = layer(residual)
 
-        outputs += residual
+        outputs = inputs + residual
         outputs = self.pad(outputs)
         outputs = self.reduce(outputs)
         outputs = self.norm2(outputs)

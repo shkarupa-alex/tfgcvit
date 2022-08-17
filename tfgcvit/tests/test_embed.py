@@ -11,7 +11,7 @@ class TestPatchEmbedding(test_combinations.TestCase):
             kwargs={'embed_dim': 2},
             input_shape=[2, 12, 13, 3],
             input_dtype='float32',
-            expected_output_shape=[None, 3, 4, 2],
+            expected_output_shape=[None, 6, 7, 2],
             expected_output_dtype='float32'
         )
         test_utils.layer_test(
@@ -19,7 +19,7 @@ class TestPatchEmbedding(test_combinations.TestCase):
             kwargs={'embed_dim': 2},
             input_shape=[2, 14, 15, 3],
             input_dtype='float32',
-            expected_output_shape=[None, 4, 4, 2],
+            expected_output_shape=[None, 7, 8, 2],
             expected_output_dtype='float32'
         )
 
