@@ -10,11 +10,11 @@ from tfgcvit.level import Level
 
 BASE_URL = 'https://github.com/shkarupa-alex/tfgcvit/releases/download/{}/gcvit_{}.h5'
 WEIGHT_URLS = {
-    'gcvit_nano': BASE_URL.format('1.0.0', 'nano'),
-    'gcvit_micro': BASE_URL.format('1.0.0', 'micro'),
-    'gcvit_tiny': BASE_URL.format('1.0.0', 'tiny'),
-    'gcvit_small': BASE_URL.format('1.0.0', 'small'),
-    'gcvit_base': BASE_URL.format('1.0.0', 'base'),
+    'gcvit_nano': BASE_URL.format('2.0.0', 'nano'),
+    'gcvit_micro': BASE_URL.format('2.0.0', 'micro'),
+    'gcvit_tiny': BASE_URL.format('2.0.0', 'tiny'),
+    'gcvit_small': BASE_URL.format('2.0.0', 'small'),
+    'gcvit_base': BASE_URL.format('2.0.0', 'base'),
 }
 WEIGHT_HASHES = {
     'gcvit_nano': '752926536d36707415c8b17d819fb1bfc48d22fd878edde1f622c76bfe23f690',
