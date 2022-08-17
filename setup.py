@@ -6,7 +6,7 @@ with open('README.md', 'r') as fh:
 
 setup(
     name='tfgcvit',
-    version='1.0.0',
+    version='2.0.0',
     description='Keras (TensorFlow v2) reimplementation of Global Context Vision Transformer models.',
     long_description=long_description,
     long_description_content_type="text/markdown",
