@@ -17,11 +17,11 @@ WEIGHT_URLS = {
     'gcvit_base': BASE_URL.format('1.0.0', 'base'),
 }
 WEIGHT_HASHES = {
-    'gcvit_nano': '851a888fe4dde3e7b0da02f02e66ee72eeacfcdf50637af046ccc7669eb82a4d',
-    'gcvit_micro': '935545aed954d3e26a4aae160842b3a358e9b06240f450aec69d453a350a106f',
-    'gcvit_tiny': '00e6677f6afb0a1317c1a0b2c626175e05782cd97490b1b5ae20af5ec3835f57',
-    'gcvit_small': '66b392b75f4ff1e7f6e134c9368d9c2f1c4136bf5aaa4f61a39d09b8c03f8d92',
-    'gcvit_base': 'a75ffeeb104c6f40d86129a41eef30ab9bb3229e8c0afbe09ebef4e9e75e3599'
+    'gcvit_nano': '752926536d36707415c8b17d819fb1bfc48d22fd878edde1f622c76bfe23f690',
+    'gcvit_micro': 'fcea210cd00d79de3fc681ddaad965ca3601077a27db256d4aacddc1154b5517',
+    'gcvit_tiny': 'b55e8de5e64174619bf1ffeb11ea2d9b553ce527d6aa4370f5ade875c6e7b1f5',
+    'gcvit_small': '0d9755ce464c8f4eece85493697c694ea616036d41136a602204c2fddec67b1b',
+    'gcvit_base': 'bcf1dd6a59f2ef12b0aa657f30aef0ed67bb6d17e9e91186c03e4da651b28b10'
 }
 
 
@@ -103,6 +103,8 @@ def GCViT(
 
     # Define model pipeline
     x = PatchEmbedding(embed_dim=embed_dim, name='patch_embed')(image)
+    x = LayerNorm(name='patch_embed/conv_down/norm1')(x)
+    x = ReduceSize(True, name='patch_embed/conv_down')(x)
     x = layers.Dropout(drop_rate, name='pos_drop')(x)
 
     path_drops = np.linspace(0., path_drop, sum(depths))
@@ -121,6 +123,7 @@ def GCViT(
                   mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, qk_scale=qk_scale, drop=drop_rate, attn_drop=attn_drop,
                   path_drop=path_drop, layer_scale=layer_scale, name=f'levels/{i}')(x)
         if not_last:
+            x = LayerNorm(name=f'levels/{i}/downsample/norm1')(x)
             x = ReduceSize(False, name=f'levels/{i}/downsample')(x)
 
     x = LayerNorm(name='norm')(x)

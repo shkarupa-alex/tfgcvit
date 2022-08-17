@@ -1,7 +1,6 @@
 from keras import layers
 from keras.utils.generic_utils import register_keras_serializable
 from keras.utils.tf_utils import shape_type_conversion
-from tfgcvit.reduce import ReduceSize
 
 
 @register_keras_serializable(package='TFGCVit')
@@ -20,15 +19,11 @@ class PatchEmbedding(layers.Layer):
         # noinspection PyAttributeOutsideInit
         self.proj = layers.Conv2D(self.embed_dim, 3, strides=2, name='proj')
 
-        # noinspection PyAttributeOutsideInit
-        self.reduce = ReduceSize(True, name='conv_down')
-
         super().build(input_shape)
 
     def call(self, inputs, *args, **kwargs):
         outputs = self.pad(inputs)
         outputs = self.proj(outputs)
-        outputs = self.reduce(outputs)
 
         return outputs
 
@@ -36,7 +31,6 @@ class PatchEmbedding(layers.Layer):
     def compute_output_shape(self, input_shape):
         output_shape = self.pad.compute_output_shape(input_shape)
         output_shape = self.proj.compute_output_shape(output_shape)
-        output_shape = self.reduce.compute_output_shape(output_shape)
 
         return output_shape
 
