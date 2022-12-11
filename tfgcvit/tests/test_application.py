@@ -11,7 +11,8 @@ MODEL_LIST = [
     (tfgcvit.GCViTMicro, 224, 512),
     (tfgcvit.GCViTTiny, 224, 512),
     (tfgcvit.GCViTSmall, 224, 768),
-    (tfgcvit.GCViTBase, 224, 1024)
+    (tfgcvit.GCViTBase, 224, 1024),
+    (tfgcvit.GCViTLarge, 224, 1536)
 ]
 
 
