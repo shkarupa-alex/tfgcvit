@@ -1,6 +1,6 @@
 import tensorflow as tf
 from keras import backend, layers
-from keras.utils.generic_utils import register_keras_serializable
+from keras.saving.object_registration import register_keras_serializable
 
 
 @register_keras_serializable(package='TFGCVit')

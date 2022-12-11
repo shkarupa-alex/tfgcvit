@@ -15,13 +15,15 @@ WEIGHT_URLS = {
     'gcvit_tiny': BASE_URL.format('2.0.0', 'tiny'),
     'gcvit_small': BASE_URL.format('2.0.0', 'small'),
     'gcvit_base': BASE_URL.format('2.0.0', 'base'),
+    'gcvit_large': BASE_URL.format('2.0.3', 'large'),
 }
 WEIGHT_HASHES = {
     'gcvit_nano': '752926536d36707415c8b17d819fb1bfc48d22fd878edde1f622c76bfe23f690',
     'gcvit_micro': 'fcea210cd00d79de3fc681ddaad965ca3601077a27db256d4aacddc1154b5517',
     'gcvit_tiny': 'b55e8de5e64174619bf1ffeb11ea2d9b553ce527d6aa4370f5ade875c6e7b1f5',
     'gcvit_small': '0d9755ce464c8f4eece85493697c694ea616036d41136a602204c2fddec67b1b',
-    'gcvit_base': 'bcf1dd6a59f2ef12b0aa657f30aef0ed67bb6d17e9e91186c03e4da651b28b10'
+    'gcvit_base': 'bcf1dd6a59f2ef12b0aa657f30aef0ed67bb6d17e9e91186c03e4da651b28b10',
+    'gcvit_large': 'ec0faee8dc7a3537d8fc64d2fdf6011cbfb468cbc37426e9596a4fdef30b475a'
 }
 
 
@@ -199,6 +201,13 @@ def GCViTSmall(model_name='gcvit_small', window_size=(7, 7, 14, 7), embed_dim=96
 
 def GCViTBase(model_name='gcvit_base', window_size=(7, 7, 14, 7), embed_dim=128, depths=(3, 4, 19, 5),
               num_heads=(4, 8, 16, 32), mlp_ratio=2., path_drop=0.5, layer_scale=1e-5, weights='imagenet', **kwargs):
+    return GCViT(model_name=model_name, window_size=window_size, embed_dim=embed_dim, depths=depths,
+                 num_heads=num_heads, mlp_ratio=mlp_ratio, path_drop=path_drop, layer_scale=layer_scale,
+                 weights=weights, **kwargs)
+
+
+def GCViTLarge(model_name='gcvit_large', window_size=(7, 7, 14, 7), embed_dim=192, depths=(3, 4, 19, 5),
+               num_heads=(6, 12, 24, 48), mlp_ratio=2., path_drop=0.5, layer_scale=1e-5, weights='imagenet', **kwargs):
     return GCViT(model_name=model_name, window_size=window_size, embed_dim=embed_dim, depths=depths,
                  num_heads=num_heads, mlp_ratio=mlp_ratio, path_drop=path_drop, layer_scale=layer_scale,
                  weights=weights, **kwargs)

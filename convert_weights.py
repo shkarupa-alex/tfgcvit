@@ -10,14 +10,16 @@ CHECKPOINTS = {
     'micro': 'https://drive.google.com/file/d/15kt8VOXdAH_jF77g7pEPk-ZmZF13sHRd/view?usp=sharing',
     'tiny': 'https://drive.google.com/file/d/1C9lLgykooDF6CxZDFDnUqw5lEqoFgULh/view?usp=sharing',
     'small': 'https://drive.google.com/file/d/1bfEJQNutyDkPHAkgYcKWhjVTT_ZnYXp4/view?usp=sharing',
-    'base': 'https://drive.google.com/file/d/1PFugO7dqfS-eubZi-yksM_FcYvUNjXBn/view?usp=sharing'
+    'base': 'https://drive.google.com/file/d/1PFugO7dqfS-eubZi-yksM_FcYvUNjXBn/view?usp=sharing',
+    'large': 'https://drive.google.com/file/d/1XDvFQrCkK-6QIpdLU1QrXWzjwnzNcH3E/view?usp=sharing'
 }
 TF_MODELS = {
     'nano': tfgcvit.GCViTNano,
     'micro': tfgcvit.GCViTMicro,
     'tiny': tfgcvit.GCViTTiny,
     'small': tfgcvit.GCViTSmall,
-    'base': tfgcvit.GCViTBase
+    'base': tfgcvit.GCViTBase,
+    'large': tfgcvit.GCViTLarge
 }
 
 
