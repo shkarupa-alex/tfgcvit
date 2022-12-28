@@ -40,7 +40,7 @@ class TestModel(test_combinations.TestCase):
 
     def test_var_shape(self):
         model = GCViTTiny(weights=None, include_top=False, input_shape=(None, None, 3))
-        model.compile(optimizer='rmsprop', loss='mse', run_eagerly=test_utils.should_run_eagerly())
+        model.compile(optimizer='rmsprop', loss='mse', run_eagerly=test_utils.should_run_eagerly(), jit_compile=False)
 
         images = np.random.random((10, 512, 384, 3)).astype('float32')
         labels = (np.random.random((10, 16, 12, 512)) + 0.5).astype('int32')
